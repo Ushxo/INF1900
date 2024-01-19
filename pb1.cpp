@@ -15,25 +15,24 @@ void probleme1(){
     bool previousStateIsPressed = false;
 
     for(;;){ // Loop infinie
-        if(PIND & PRESSED){        
+        if(PIND & PRESSED){
             _delay_ms(10); // Debounce
-            if(PIND & PRESSED && !previousStateIsPressed){    
-                previousStateIsPressed = true;
-                switch(state){
-                    case INIT: state = S1; break;
-                    case S1: state = S2; break;
-                    case S2: state = S3; break;
-                    case S3: 
-                        PORTB = VERT; // Allumer en vert
-                        _delay_ms(2000); // Attendre 2 secondes
-                        PORTB = ETEINT; // Éteindre la DEL
-                        state = INIT; // Revenir à l'état initial
-                        break;
-                }
-            }
+            previousStateIsPressed = true;
         }
-        else{
+        else if(previousStateIsPressed){
+            // Ici, le bouton vient d'être relâché
             previousStateIsPressed = false;
+            switch(state){
+                case INIT: state = S1; break;
+                case S1: state = S2; break;
+                case S2: state = S3; break;
+                case S3: 
+                    PORTB = VERT; // Allumer en vert
+                    _delay_ms(2000); // Attendre 2 secondes
+                    PORTB = ETEINT; // Éteindre la DEL
+                    state = INIT; // Revenir à l'état initial
+                    break;
+            }
         }
     }    
 }
@@ -42,4 +41,5 @@ int main(){
     probleme1();
     return 0;
 }
+
 
